@@ -1,74 +1,80 @@
 #Program by: Marcus Brumfield
 #NETID: mib21
 
-class TuringMachine:
-    def __init__(self, 
-                 tape, 
-                 blank_symbol,
-                 tape_alphabet,
-                 initial_state,
-                 accepting_states,
-                 reject_states,
-                 transition_function):
-        self.__tape = list(tape)
-        self.__head_position = 0
-        self.__blank_symbol = blank_symbol
-        self.__tape.append(self.__blank_symbol)
-        self.__current_state = initial_state
-        self.__acceptstate = accepting_states
-        self.__transition_function = transition_function
-        self.__tape_alphabet = tape_alphabet
-        self.__reject_states = reject_states
+from turing_machine import *
 
-    def __str__(self):
-        s = ""
-        s += 'Tape: ' + str(self.__tape)  + '\n' + 'Current: ' + self.__current_state + '\n'
+loop1 = True
+loop2 = True
+loop3 = True
 
-        return s
-
+loop1 = input('Do you want to start the Turing Machine simulator? (yes/no) ')
+while loop1:
+    rules = []
+    final = []
+    row = 0
+    col = 5
+    transition_function = dict()
     
-    def simulate(self):
-        count = 0
-        tape = self.__tape
-        size = len(list(tape))
+    if loop1.lower() == 'n' or loop1.lower() == 'no':
+        break
+    file_name = input("Enter the Turing Machine's file name. ")
+
+    while loop2:
+        try:
+            infile = open(file_name, 'r')
+            print('Turing Machine from ', file_name, ':')
+            print('')
+            break
         
-        
-        print('Should stop here: ', self.__acceptstate[0])
-        print('')
-        while self.__current_state != self.__acceptstate[0] and self.__current_state != self.__reject_states[0]:
-            tape_print = ''
-            current_read = self.__tape[count]
-            tup = (self.__current_state, self.__tape[count])
-            if tup in self.__transition_function.keys():
-                print('Current state: ', self.__current_state)
-                tape[count] = self.__transition_function[tup][1]
-                
-                self.__current_state = self.__transition_function[tup][0]
-                
-                for x in tape:
-                    tape_print += x
-                print('Tape: ', '\t\t', tape_print)
-                print('Head: ', '\t\t', end='')
-                for y in range(0, count):
-                    print(' ', end='')
-                print(' |')
-                
-                if self.__transition_function[tup][2] == 'L':
-                    count -= 1
-                elif self.__transition_function[tup][2] == 'R':
-                    count += 1
-                else:
-                    print('Derp')
-                    break
-            else:
-                print('Derp')
-                break
-        print('')
-        print('Result: ')
-        if self.__current_state == self.__acceptstate[0]:
-            print('ACCEPT!')
-        elif self.__current_state == self.__reject_states[0]:
-            print('REJECT!')
+        except:
+            print('An error occured. ')
+            file_name = input("Enter the Turing Machine's file name. ")
+
+    tape_input = input('Enter Tape input: ')
+    tape_input.split()
+
+    alphabet = infile.readline().strip().split()
+    tape_alphabet = infile.readline().strip().split()
+
+    sub = len(tape_alphabet) - 1
+    blank = tape_alphabet[sub]
+
+    states = infile.readline().strip().split()
+    start_state = infile.readline().strip()
+    accept_state = infile.readline().strip().split()
+    reject_state = infile.readline().strip().split()
+
+    while loop3:
+        transition = infile.readline().strip()
+        if transition == '':
+            break
         else:
-            print('REJECT - There is an error in the tape.')
+            add = transition
+            rules.append(add.split())
+            row += 1
+        
+    for r in range(row):
+        for c in range(col):
+            key1 = rules[r][0]
+            key2 = rules[r][1]
+            value1 = rules[r][2]
+            value2 = rules[r][3]
+            value3 = rules[r][4]
+            key = (rules[r][0], rules[r][1])
+            value = (rules[r][2], rules[r][3], rules[r][4])
+
+            transition_function[key] = value
             
+    infile.close()
+
+    t = TuringMachine(tape = tape_input, blank_symbol = blank,
+                      tape_alphabet = alphabet,
+                      initial_state = start_state,
+                      accepting_states = accept_state,
+                      reject_states = reject_state, 
+                      transition_function = transition_function)
+
+    t.simulate()
+    print('')
+    loop1 = input('Do you want to start the Turing Machine simulator? (yes/no) ')
+  
