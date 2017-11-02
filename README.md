@@ -1,4 +1,4 @@
-# Turing-Machine-
+# Turing-Machine
 
 This is a Turing Machine simulator, in this case a single tape deterministic Turing machine. The program reads a file that describes a Turing Machine and then ask repeatedly for input words that is then determines if are or are not in the language.
 
